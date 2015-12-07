@@ -28,6 +28,8 @@ BEGIN_MESSAGE_MAP(CCodeEditorView, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CCodeEditorView::OnFilePrintPreview)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_WM_CREATE()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 // CCodeEditorView 构造/析构
@@ -125,3 +127,51 @@ CCodeEditorDoc* CCodeEditorView::GetDocument() const // 非调试版本是内联的
 
 
 // CCodeEditorView 消息处理程序
+
+int CCodeEditorView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CView::OnCreate(lpCreateStruct) == -1)
+		return -1;
+
+	// TODO:  在此添加您专用的创建代码
+
+	m_ScintillaWnd.Create(
+		WS_EX_CLIENTEDGE,
+		WS_CHILD | WS_VISIBLE,
+		CRect(0, 0, lpCreateStruct->cx, lpCreateStruct->cy),
+		this, 10000);
+
+	return 0;
+}
+
+
+void CCodeEditorView::OnSize(UINT nType, int cx, int cy)
+{
+	CView::OnSize(nType, cx, cy);
+	if (m_ScintillaWnd.GetSafeHwnd())
+	{
+		m_ScintillaWnd.MoveWindow(0, 0, cx, cy);
+	}
+	// TODO: 在此处添加消息处理程序代码
+}
+
+
+BOOL CCodeEditorView::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult)
+{
+	// TODO: 在此添加专用代码和/或调用基类
+	LPNMHDR pnmh = (LPNMHDR)lParam;
+	if (pnmh != NULL && pnmh->hwndFrom == m_ScintillaWnd.m_hWnd)
+	{
+		struct SCNotification* msg = (struct SCNotification*)lParam;
+		switch (pnmh->code)
+		{
+		case SCN_CHARADDED:
+			break;
+		case SCN_MODIFIED:
+			break;
+		case SCN_ZOOM:
+			break;
+		}
+	}
+	return CView::OnNotify(wParam, lParam, pResult);
+}

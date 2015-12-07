@@ -16,6 +16,8 @@
 
 class CCodeEditorApp : public CWinAppEx
 {
+private:
+	HMODULE		m_hModSciLexer;
 public:
 	CCodeEditorApp();
 

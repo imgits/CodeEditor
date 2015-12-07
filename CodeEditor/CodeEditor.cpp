@@ -73,6 +73,7 @@ BOOL CCodeEditorApp::InitInstance()
 
 	CWinAppEx::InitInstance();
 
+	m_hModSciLexer = LoadLibrary("SciLexer.dll");
 
 	// 初始化 OLE 库
 	if (!AfxOleInit())
@@ -151,7 +152,11 @@ int CCodeEditorApp::ExitInstance()
 {
 	//TODO: 处理可能已添加的附加资源
 	AfxOleTerm(FALSE);
-
+	if (m_hModSciLexer != NULL)
+	{
+		FreeLibrary(m_hModSciLexer);
+		m_hModSciLexer = NULL;
+	}
 	return CWinAppEx::ExitInstance();
 }
 
